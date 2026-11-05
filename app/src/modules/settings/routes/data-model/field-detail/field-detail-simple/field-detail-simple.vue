@@ -41,6 +41,8 @@ const interfacesSorted = computed(() => {
 	);
 });
 
+const chosenInterface = syncFieldDetailStoreProperty('field.meta.interface');
+
 const groups = computed(() => {
 	const groupsWithInterfaces = [
 		{
@@ -83,13 +85,15 @@ const groups = computed(() => {
 		const filteredInterfaces = interfacesSorted.value.filter((inter) => (inter.group ?? 'other') === group);
 		if (!search.value) return filteredInterfaces;
 		const searchValue = search.value!.toLowerCase();
+		// The chosen interface stays listed even when the search doesn't match it, so its configuration stays open
 		return filteredInterfaces.filter(
-			(inter) => inter.id.toLowerCase().includes(searchValue) || inter.name.toLowerCase().includes(searchValue),
+			(inter) =>
+				inter.id === chosenInterface.value ||
+				inter.id.toLowerCase().includes(searchValue) ||
+				inter.name.toLowerCase().includes(searchValue),
 		);
 	}
 });
-
-const chosenInterface = syncFieldDetailStoreProperty('field.meta.interface');
 
 const configRow = computed(() => {
 	if (!chosenInterface.value) return null;
